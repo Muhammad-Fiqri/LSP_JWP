@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"
 
 export default function LoginForm() {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
 
+    let navigate = useNavigate();
+
     function handleForm(e) {
         e.preventDefault();
+        navigate("/admin/catalog")
     }
-
-    useEffect(() => {
-        console.log(email)
-        console.log(password)
-    })
 
     return(
         <div id="LoginForm" className="w-[60%] h-[100%] mx-auto mt-[30px] bg-[#D9D9D9] rounded-[10px]">
