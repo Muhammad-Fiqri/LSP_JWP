@@ -14,7 +14,7 @@ export default function LoginForm() {
     })
 
     return(
-        <div id="LoginForm" className="w-[97%] h-[100%] m-[1.5%] bg-[#D9D9D9] rounded-[10px]">
+        <div id="LoginForm" className="w-[60%] h-[100%] mx-auto mt-[30px] bg-[#D9D9D9] rounded-[10px]">
             <form onSubmit={handleForm} className="flex flex-col p-[30px]">
                 <h1 className="text-3xl text-center">Login</h1>
 

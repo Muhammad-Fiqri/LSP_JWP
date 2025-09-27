@@ -8,7 +8,7 @@ export default function TopNav() {
             <button onClick={() => {navigate("/")}}>
                 Home
             </button>
-            <button>
+            <button onClick={() => {navigate("/catalog")}}>
                 Katalog
             </button>
             <button>
