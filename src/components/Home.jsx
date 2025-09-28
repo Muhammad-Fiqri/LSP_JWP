@@ -1,6 +1,6 @@
 export default function Home() {
     return(
-        <div id="Post" className="bg-[#D9D9D9] rounded-[10px] w-[95%] h-[97%] mx-[2.5%] my-[1.5%]">
+        <div id="Post" className="bg-[#D9D9D9] rounded-[10px] w-[95%] h-[97%] mx-[2.5%] my-[1.5%] shadow-2xl">
             <h1 className="text-3xl text-center py-[30px]">Post Promosi 1</h1>
             <img className="px-[30px] w-[100%]" src="/Post Media Example.png"></img>
             <div id="post-metadata" className="grid grid-rows-3 grid-cols-2 px-[30px] py-[10px] w-[27%]">

@@ -50,7 +50,7 @@ export default function Catalog() {
     return(
         <div id="Catalog" className="grid grid-cols-3 w-[100vw] gap-[30px] px-[30px] py-[20px] [&>div]:rounded-[10px]">
             {packageData.map((packageItem) => (
-                    <PackageCard key={packageItem.id} packageItem={packageItem} />
+                    <PackageCard key={packageItem.id} packageItem={packageItem} className="shadow-2xl"/>
                 ))}
         </div>
     );

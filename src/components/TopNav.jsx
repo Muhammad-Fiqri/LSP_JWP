@@ -5,14 +5,14 @@ export default function TopNav() {
 
     return(
         <>
-            <div id="TopNav" className="text-2xl h-[10vh] [&>button]:h-[100%] [&>button]:w-[200px] bg-[#9A9A9A] *:hover:bg-[#D9D9D9]">
+            <div id="TopNav" className="text-2xl h-[10vh] [&>button]:h-[100%] [&>button]:w-[200px] bg-[#9A9A9A] *:hover:bg-[#D9D9D9] shadow-2xl">
                 <button onClick={() => {navigate("/")}}>
                     Home
                 </button>
                 <button onClick={() => {navigate("/catalog")}}>
                     Katalog
                 </button>
-                <button>
+                <button onClick={() => {navigate("/order")}}>
                     Order
                 </button>
                 <button onClick={() => {navigate("/login")}} className="float-right">
