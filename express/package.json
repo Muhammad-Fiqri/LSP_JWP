@@ -1,0 +1,16 @@
+{
+  "name": "LSP-JWP_Backend",
+  "version": "1.0.0",
+  "description": "LSP-JWP Backend",
+  "main": "index.js",
+  "author": "FEEDEZ",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  },
+  "scripts": {
+    "dev": "node index.js"
+  }
+}
