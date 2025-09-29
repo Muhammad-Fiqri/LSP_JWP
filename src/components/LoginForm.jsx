@@ -6,13 +6,6 @@ export default function LoginForm() {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
 
-    useEffect(
-        () => {
-            // console.log(email);
-            // console.log(password);
-        }
-    )
-
     let navigate = useNavigate();
 
     async function handleForm(e) {
@@ -43,8 +36,6 @@ export default function LoginForm() {
         } catch(err) {
             alert(err)
         }
-
-        //navigate("/admin/catalog")
     }
 
     return(
