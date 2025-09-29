@@ -1,15 +1,47 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function LoginForm() {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
 
+    useEffect(
+        () => {
+            // console.log(email);
+            // console.log(password);
+        }
+    )
+
     let navigate = useNavigate();
 
-    function handleForm(e) {
+    async function handleForm(e) {
         e.preventDefault();
-        navigate("/admin/catalog")
+
+        let formData = {
+            email: email,
+            password: password
+        }
+
+        let jsonRequest = JSON.stringify(formData);
+
+        try {
+            const res = await axios.post('http://localhost:3000/login', jsonRequest, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if(res) {
+                navigate("/admin/catalog")
+            } else {
+                alert("your email and password is wrong, try again!")
+            }
+        } catch(err) {
+            alert(err)
+        }
+
+        //navigate("/admin/catalog")
     }
 
     return(
