@@ -36,7 +36,9 @@ export default function PostDashboard() {
                 },
             });
 
-            console.log(res)
+            if(res.status == 200) {
+                alert(res.data.message)
+            }
         } catch(err) {
             alert(err)
         }

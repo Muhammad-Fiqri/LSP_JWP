@@ -74,6 +74,8 @@ app.post('/post', upload.any(), (req,res) => {
             }
           }
         );
+
+        res.status(200).json({ message: 'Post Created' });
       } catch(err) {
         console.log(err);
         console.log(req.files)
@@ -83,12 +85,16 @@ app.post('/post', upload.any(), (req,res) => {
         fs.unlink(filePath, (err) => {
           if (err) {
             console.error('Error deleting file:', err);
-            return res.status(500).json({ message: 'Error deleting file.' });
+            res.status(500).json({ message: 'Error deleting file.' });
           }
           res.status(200).json({ message: 'File deleted successfully.' });
         });
       }
-  }
+    }
+
+    if (req.body.mode == 'read') {
+
+    }
 });
 
 app.get('/', (req, res) => {
