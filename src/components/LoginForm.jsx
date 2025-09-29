@@ -33,6 +33,9 @@ export default function LoginForm() {
             });
 
             if(res) {
+                //create cookie
+                let d = new Date()
+                document.cookie = "username=fiqri login_date=" + d.getTime();
                 navigate("/admin/catalog")
             } else {
                 alert("your email and password is wrong, try again!")

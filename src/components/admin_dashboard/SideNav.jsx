@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom"
 
 let button_list = [
@@ -30,6 +31,16 @@ let button_list = [
 
 export default function SideNav() {
     let navigate = useNavigate();
+
+    useEffect(() => {
+        let cookie = document.cookie
+        if (cookie.startsWith('username=')) {
+            alert("Welcome Admin")
+        } else {
+            alert("You are not logged in!")
+            navigate("/login")
+        }
+    },[]);
 
     return(
         <div className="grid grid-cols-[1fr_9fr]">
