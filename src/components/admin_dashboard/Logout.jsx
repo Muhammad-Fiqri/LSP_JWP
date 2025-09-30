@@ -5,6 +5,7 @@ export default function Logout() {
 
     function handleLogout(e) {
         e.preventDefault();
+        document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
         navigate("/login")
     }
 

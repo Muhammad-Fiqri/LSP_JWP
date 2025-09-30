@@ -50,9 +50,41 @@ app.post('/login', (req, res) => {
     );
   } catch(err) {
     console.log(err);
+    res.send(err)
   }
 }
 )
+
+app.get('/image', upload.any(), (req,res) => {
+  let imageURL = req.query.imageURL
+  const file = `tmp/` + imageURL
+  res.download(file);
+});
+
+app.get('/post', upload.any(), (req,res) => {
+  if (req.query.mode == 'read') {
+    try {
+      connection.query(
+        'SELECT * FROM `post` WHERE `id_post` = ?',
+        [req.query.id_post],
+        function (err, results) {
+          if(!err) {
+            if (results.length == 0 || undefined) {
+              res.status(404).json({message: "Post not found"})
+            } else {
+              res.status(200).json(results)
+            }
+          } else {
+            console.log(err);
+            res.send(err)
+          }
+        }
+      );
+    } catch(err) {
+      console.log(err);
+    }
+  }
+})
 
 app.post('/post', upload.any(), (req,res) => {
     if (req.body.mode == 'create') {
@@ -68,14 +100,13 @@ app.post('/post', upload.any(), (req,res) => {
           function (err, results) {
             if(!err) {
               console.log(results);
+              res.status(200).json({ message: 'Post Created' });
             } else {
               console.log(err);
               res.send(err);
             }
           }
         );
-
-        res.status(200).json({ message: 'Post Created' });
       } catch(err) {
         console.log(err);
         console.log(req.files)
@@ -91,10 +122,69 @@ app.post('/post', upload.any(), (req,res) => {
         });
       }
     }
+});
 
-    if (req.body.mode == 'read') {
+app.put('/post', upload.any(), (req,res) => {
+  if (req.body.mode == 'update') {
+    try {
+      if (req.files[0].filename == undefined) {
+        console.error('no media post:', err);
+        res.status(500).json({ message: 'no media post found.' });
+      }
 
+      connection.query(
+        'UPDATE post SET title = ?, image = ?, description = ? WHERE id_post = ?',
+        [req.body.title_post, req.files[0].filename, req.body.content_post, req.body.id_post],
+        function (err, results) {
+          if(!err) {
+            console.log(results);
+            res.status(200).json({ message: 'Post Updated' });
+          } else {
+            console.log(err);
+            res.send(err);
+          }
+        }
+      );
+    } catch(err) {
+      console.log(err);
+      console.log(req.files)
+
+      const filename = req.files[0].filename;
+      const filePath = `./tmp/${filename}`;
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error('Error deleting file:', err);
+          res.status(500).json({ message: 'Error deleting file.' });
+        }
+        res.status(200).json({ message: 'File deleted successfully.' });
+      });
     }
+  }
+});
+
+app.delete('/post', upload.any(), (req,res) => {
+  if (req.query.mode == 'delete') {
+    try {
+      connection.query(
+        'DELETE FROM post WHERE id_post = ?',
+        [req.query.id_post],
+        function (err, results) {
+          if(!err) {
+            if (results.length == 0 || undefined) {
+              res.status(404).json({message: "Post not found!"})
+            } else {
+              res.status(200).json(results)
+            }
+          } else {
+            console.log(err);
+            res.send(err)
+          }
+        }
+      );
+    } catch(err) {
+      console.log(err);
+    }
+  }
 });
 
 app.get('/', (req, res) => {

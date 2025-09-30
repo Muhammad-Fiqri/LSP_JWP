@@ -25,10 +25,11 @@ export default function LoginForm() {
                 },
             });
 
-            if(res) {
-                //create cookie
-                let d = new Date()
-                document.cookie = "username=fiqri login_date=" + d.getTime();
+            console.log(res);
+
+            if(res.data) {
+                //set cookie
+                document.cookie = "username=fiqri";
                 navigate("/admin/catalog")
             } else {
                 alert("your email and password is wrong, try again!")
