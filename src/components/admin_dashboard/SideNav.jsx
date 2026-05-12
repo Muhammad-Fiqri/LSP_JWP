@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom"
+import { useEffect, useRef } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 let button_list = [
     {
@@ -32,7 +32,11 @@ let button_list = [
 export default function SideNav() {
     let navigate = useNavigate();
 
+    const hasRun = useRef(false);
     useEffect(() => {
+        if (hasRun.current) return;
+        hasRun.current = true;
+        
         let cookie = document.cookie
         if (cookie.startsWith('username=')) {
             alert("Welcome Admin")
