@@ -14,13 +14,13 @@ export default function PostDashboard() {
     const content_post_input = useRef(null);
     const media_post_read = useRef(null);
 
-    useEffect(() => {
-        console.log(mode);
-        console.log(id_post);
-        console.log(title_post);
-        console.log(media_post);
-        console.log(content_post);
-    })
+    // useEffect(() => {
+    //     console.log(mode);
+    //     console.log(id_post);
+    //     console.log(title_post);
+    //     console.log(media_post);
+    //     console.log(content_post);
+    // })
 
     async function handleForm(e) {
         e.preventDefault()

@@ -1,4 +1,14 @@
+import { useState } from "react";
+
+
 export default function CatalogDashboard() {
+    const [mode, setMode] = useState("create");
+    const [id_package, setId_package] = useState("");
+    const [name_package, setName_package] = useState("");
+    const [media_post, setMedia_post] = useState();
+    const [description_package, setDescription_package] = useState("");
+    const [price_package, setPrice_package] = useState("");
+
     function handleForm(e) {
         e.preventDefault()
     }

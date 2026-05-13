@@ -38,7 +38,7 @@ export default function SideNav() {
         hasRun.current = true;
         
         let cookie = document.cookie
-        if (cookie.startsWith('username=')) {
+        if (cookie.includes('username=fiqri')) {
             alert("Welcome Admin")
         } else {
             alert("You are not logged in!")
