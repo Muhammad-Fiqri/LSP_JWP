@@ -105,6 +105,31 @@ export default function CatalogDashboard() {
                 }
 
                 break;
+            
+            case "delete":
+                formData.append('mode',mode);
+                formData.append('id_package',id_package);
+
+                try {
+                    const res = await axios.delete('http://localhost:3000/catalogues', {
+                        params: {
+                            mode: mode,
+                            id_package: id_package
+                        }
+                    });
+        
+                    if(res.status == 200) {
+                        if(res.data.affectedRows > 0) {
+                            alert("Package Deleted")
+                        } else {
+                            alert("Package Not Found")
+                        }
+                    }
+                } catch(err) {
+                    alert(err)
+                }
+
+                break;
         }
 
         async function showCataloguesData(data) {
