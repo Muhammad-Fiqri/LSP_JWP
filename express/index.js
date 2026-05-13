@@ -258,6 +258,44 @@ app.get('/catalogues', upload.any(), (req,res) => {
   }
 })
 
+app.put('/catalogues', upload.any(), (req,res) => {
+  if (req.body.mode == 'update') {
+    try {
+      if (req.files[0].filename == undefined) {
+        console.error('no media post:', err);
+        res.status(500).json({ message: 'no media post found.' });
+      }
+
+      connection.query(
+        'UPDATE catalogues SET image = ?, package_name = ?, description = ?, price = ? WHERE package_id = ?',
+        [req.files[0].filename, req.body.name_package, req.body.description_package, req.body.price_package, req.body.id_package],
+        function (err, results) {
+          if(!err) {
+            console.log(results);
+            res.status(200).json({ message: 'Package Updated' });
+          } else {
+            console.log(err);
+            res.send(err);
+          }
+        }
+      );
+    } catch(err) {
+      console.log(err);
+      console.log(req.files)
+
+      const filename = req.files[0].filename;
+      const filePath = `./tmp/${filename}`;
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error('Error deleting file:', err);
+          res.status(500).json({ message: 'Error deleting file.' });
+        }
+        res.status(200).json({ message: 'File deleted successfully.' });
+      });
+    }
+  }
+});
+
 app.get('/', (req, res) => {
   res.send('This is the back end handler of LSP JWP Web')
 });

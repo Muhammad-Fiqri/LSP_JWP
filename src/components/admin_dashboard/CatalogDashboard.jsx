@@ -77,6 +77,34 @@ export default function CatalogDashboard() {
                 }
 
                 break;
+            
+            case "update":
+                if (media_post == undefined) {
+                    alert("Media Post must not be empty!")
+                    return
+                }
+                formData.append('mode', mode);
+                formData.append('id_package', id_package);
+                formData.append('name_package', name_package);
+                formData.append('media_post', media_post);
+                formData.append('description_package', description_package);
+                formData.append('price_package', price_package);
+        
+                try {
+                    const res = await axios.put('http://localhost:3000/catalogues', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+        
+                    if(res.status == 200) {
+                        alert(res.data.message)
+                    }
+                } catch(err) {
+                    alert(err)
+                }
+
+                break;
         }
 
         async function showCataloguesData(data) {
