@@ -233,6 +233,31 @@ app.post('/catalogues', upload.any(), (req,res) => {
     }
 });
 
+app.get('/catalogues', upload.any(), (req,res) => {
+  if (req.query.mode == 'read') {
+    try {
+      connection.query(
+        'SELECT * FROM `catalogues` WHERE `package_id` = ?',
+        [req.query.id_package],
+        function (err, results) {
+          if(!err) {
+            if (results.length == 0 || undefined) {
+              res.status(404).json({message: "Package not found"})
+            } else {
+              res.status(200).json(results)
+            }
+          } else {
+            console.log(err);
+            res.send(err)
+          }
+        }
+      );
+    } catch(err) {
+      console.log(err);
+    }
+  }
+})
+
 app.get('/', (req, res) => {
   res.send('This is the back end handler of LSP JWP Web')
 });

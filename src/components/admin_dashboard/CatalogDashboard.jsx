@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 
@@ -10,6 +10,11 @@ export default function CatalogDashboard() {
     const [description_package, setDescription_package] = useState("");
     const [price_package, setPrice_package] = useState("");
 
+    const name_package_input = useRef(null);
+    const description_package_input = useRef(null);
+    const price_package_input = useRef(null);
+    const media_post_read = useRef(null);
+
     useEffect(() => {
         console.log(mode);
         console.log(id_package);
@@ -17,6 +22,8 @@ export default function CatalogDashboard() {
         console.log(media_post);
         console.log(description_package);
         console.log(price_package);
+
+        console.log(description_package_input)
     }, [mode, id_package, name_package, media_post, description_package, price_package]);
 
     async function handleForm(e) {
@@ -51,6 +58,56 @@ export default function CatalogDashboard() {
                 }
 
                 break;
+            
+            case "read":
+                try {
+                    const res = await axios.get('http://localhost:3000/catalogues', {
+                        params: {
+                            mode: mode,
+                            id_package: id_package 
+                        }
+                    });
+        
+                    if(res.status == 200) {
+                        alert("Package found!")
+                        showCataloguesData(res.data[0])
+                    }
+                } catch(err) {
+                    alert(err)
+                }
+
+                break;
+        }
+
+        async function showCataloguesData(data) {
+            console.log(data);
+            
+            let package_name = data.package_name;
+            let media_post = data.image;
+            let description = data.description;
+            let price = data.price;
+            
+            // Update form inputs with the data
+            name_package_input.current.value = package_name;
+            description_package_input.current.value = description;
+            price_package_input.current.value = price;
+
+            try {
+                const res = await axios.get('http://localhost:3000/image', {
+                    params: {
+                        imageURL: media_post
+                    },
+                    responseType: 'blob'
+                });
+    
+                if(res.status == 200) {
+                    const url = URL.createObjectURL(res.data);
+                    media_post_read.current.src = url;
+                    media_post_read.current.hidden = false;
+                }
+            } catch(err) {
+                alert(err)
+            }
         }
     }
 
@@ -76,8 +133,10 @@ export default function CatalogDashboard() {
 
                 <div>
                     <label htmlFor="name-package">Nama Paket</label>
-                    <input onChange={(e) => setName_package(e.target.value)} type="text" name="name-package" id="name-package" className="w-full p-2 bg-[#9A9A9A] rounded-[10px] h-[7vh] pl-[10px]" />
+                    <input onChange={(e) => setName_package(e.target.value)} ref={name_package_input} type="text" name="name-package" id="name-package" className="w-full p-2 bg-[#9A9A9A] rounded-[10px] h-[7vh] pl-[10px]" />
                 </div>
+
+                <img hidden="true" ref={media_post_read}  className="w-[20%] my-[20px] mx-auto aspect-square rounded-[10px]"/>
 
                 <div>
                     <label htmlFor="media-post">Media Post</label>
@@ -91,6 +150,7 @@ export default function CatalogDashboard() {
                     <label htmlFor="description-package">Deskripsi Paket</label>
                     <textarea 
                         onChange={(e) => setDescription_package(e.target.value)}
+                        ref={description_package_input}
                         name="description-package" 
                         id="description-package" 
                         rows="5" 
@@ -100,7 +160,7 @@ export default function CatalogDashboard() {
 
                 <div>
                     <label htmlFor="price-package">Harga Paket</label>
-                    <input onChange={(e) => setPrice_package(e.target.value)} type="number" name="price-package" id="price-package" className="w-full p-2 bg-[#9A9A9A] rounded-[10px] h-[7vh] pl-[10px]" />
+                    <input onChange={(e) => setPrice_package(e.target.value)} ref={price_package_input} type="number" name="price-package" id="price-package" className="w-full p-2 bg-[#9A9A9A] rounded-[10px] h-[7vh] pl-[10px]" />
                 </div>
 
                 <button type="submit" className="w-full p-2 text-black bg-[#FFFFFF] rounded-[10px] h-[7vh] mt-[10px]">
