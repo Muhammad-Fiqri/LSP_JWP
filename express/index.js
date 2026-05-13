@@ -30,6 +30,8 @@ const connection = mysql.createConnection({
   database: 'JeWePe',
 });
 
+// Login API
+
 app.post('/login', (req, res) => {
   try {
     connection.query(
@@ -55,11 +57,15 @@ app.post('/login', (req, res) => {
 }
 )
 
+// Download Image
+
 app.get('/image', upload.any(), (req,res) => {
   let imageURL = req.query.imageURL
   const file = `tmp/` + imageURL
   res.download(file);
 });
+
+// POST Dashboard
 
 app.get('/post', upload.any(), (req,res) => {
   if (req.query.mode == 'read') {
@@ -185,6 +191,46 @@ app.delete('/post', upload.any(), (req,res) => {
       console.log(err);
     }
   }
+});
+
+// Catalogue Dashboard
+
+app.post('/catalogues', upload.any(), (req,res) => {
+    if (req.body.mode == 'create') {
+      try {
+        if (req.files[0].filename == undefined) {
+          console.error('no media post:', err);
+          res.status(500).json({ message: 'no media post found.' });
+        }
+
+        connection.query(
+          'INSERT INTO catalogues (image, package_name, description, price) VALUES (?,?,?,?)',
+          [req.files[0].filename, req.body.name_package, req.body.description_package, req.body.price_package],
+          function (err, results) {
+            if(!err) {
+              console.log(results);
+              res.status(200).json({ message: 'Package Created' });
+            } else {
+              console.log(err);
+              res.send(err);
+            }
+          }
+        );
+      } catch(err) {
+        console.log(err);
+        console.log(req.files)
+
+        const filename = req.files[0].filename;
+        const filePath = `./tmp/${filename}`;
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error('Error deleting file:', err);
+            res.status(500).json({ message: 'Error deleting file.' });
+          }
+          res.status(200).json({ message: 'File deleted successfully.' });
+        });
+      }
+    }
 });
 
 app.get('/', (req, res) => {

@@ -20,7 +20,7 @@ export default function PostDashboard() {
     //     console.log(title_post);
     //     console.log(media_post);
     //     console.log(content_post);
-    // })
+    // }, [mode,id_post,title_post,media_post,content_post]);
 
     async function handleForm(e) {
         e.preventDefault()
