@@ -38,4 +38,6 @@ yarn run dev
 to run the backend
 
 # Thing to improve
-Login now require JWT but sadly it's still stored in session storage which is insecure, try using httponly on next dev
+- Login now require JWT but sadly it's still stored in session storage which is insecure, try using httponly on next dev
+
+- Add JWT authentication middleware for the Dashboard API
