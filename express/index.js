@@ -281,6 +281,28 @@ app.get('/catalogues', upload.any(), (req,res) => {
   }
 })
 
+app.get('/allCatalogues', upload.any(), (req,res) => {
+  try {
+    connection.query(
+      'SELECT * FROM `catalogues`',
+      function (err, results) {
+        if(!err) {
+          if (results.length == 0 || undefined) {
+            res.status(404).json({message: "No Packages Existed"})
+          } else {
+            res.status(200).json(results)
+          }
+        } else {
+          console.log(err);
+          res.send(err)
+        }
+      }
+    );
+  } catch(err) {
+    console.log(err);
+  }
+})
+
 app.put('/catalogues', upload.any(), (req,res) => {
   if (req.body.mode == 'update') {
     try {
@@ -345,28 +367,6 @@ app.delete('/catalogues', upload.any(), (req,res) => {
 });
 
 // Order Dashboard
-
-app.get('/allCatalogues', upload.any(), (req,res) => {
-  try {
-    connection.query(
-      'SELECT * FROM `catalogues`',
-      function (err, results) {
-        if(!err) {
-          if (results.length == 0 || undefined) {
-            res.status(404).json({message: "No Packages Existed"})
-          } else {
-            res.status(200).json(results)
-          }
-        } else {
-          console.log(err);
-          res.send(err)
-        }
-      }
-    );
-  } catch(err) {
-    console.log(err);
-  }
-})
 
 app.post('/orders', upload.any(), (req,res) => {
   try {
