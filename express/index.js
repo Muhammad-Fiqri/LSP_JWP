@@ -30,6 +30,8 @@ const connection = mysql.createConnection({
   database: 'JeWePe',
 });
 
+// Login API
+
 app.post('/login', (req, res) => {
   try {
     connection.query(
@@ -55,11 +57,15 @@ app.post('/login', (req, res) => {
 }
 )
 
+// Download Image
+
 app.get('/image', upload.any(), (req,res) => {
   let imageURL = req.query.imageURL
   const file = `tmp/` + imageURL
   res.download(file);
 });
+
+// POST Dashboard
 
 app.get('/post', upload.any(), (req,res) => {
   if (req.query.mode == 'read') {
@@ -186,6 +192,180 @@ app.delete('/post', upload.any(), (req,res) => {
     }
   }
 });
+
+// Catalogue Dashboard
+
+app.post('/catalogues', upload.any(), (req,res) => {
+    if (req.body.mode == 'create') {
+      try {
+        if (req.files[0].filename == undefined) {
+          console.error('no media post:', err);
+          res.status(500).json({ message: 'no media post found.' });
+        }
+
+        connection.query(
+          'INSERT INTO catalogues (image, package_name, description, price) VALUES (?,?,?,?)',
+          [req.files[0].filename, req.body.name_package, req.body.description_package, req.body.price_package],
+          function (err, results) {
+            if(!err) {
+              console.log(results);
+              res.status(200).json({ message: 'Package Created' });
+            } else {
+              console.log(err);
+              res.send(err);
+            }
+          }
+        );
+      } catch(err) {
+        console.log(err);
+        console.log(req.files)
+
+        const filename = req.files[0].filename;
+        const filePath = `./tmp/${filename}`;
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error('Error deleting file:', err);
+            res.status(500).json({ message: 'Error deleting file.' });
+          }
+          res.status(200).json({ message: 'File deleted successfully.' });
+        });
+      }
+    }
+});
+
+app.get('/catalogues', upload.any(), (req,res) => {
+  if (req.query.mode == 'read') {
+    try {
+      connection.query(
+        'SELECT * FROM `catalogues` WHERE `package_id` = ?',
+        [req.query.id_package],
+        function (err, results) {
+          if(!err) {
+            if (results.length == 0 || undefined) {
+              res.status(404).json({message: "Package not found"})
+            } else {
+              res.status(200).json(results)
+            }
+          } else {
+            console.log(err);
+            res.send(err)
+          }
+        }
+      );
+    } catch(err) {
+      console.log(err);
+    }
+  }
+})
+
+app.put('/catalogues', upload.any(), (req,res) => {
+  if (req.body.mode == 'update') {
+    try {
+      if (req.files[0].filename == undefined) {
+        console.error('no media post:', err);
+        res.status(500).json({ message: 'no media post found.' });
+      }
+
+      connection.query(
+        'UPDATE catalogues SET image = ?, package_name = ?, description = ?, price = ? WHERE package_id = ?',
+        [req.files[0].filename, req.body.name_package, req.body.description_package, req.body.price_package, req.body.id_package],
+        function (err, results) {
+          if(!err) {
+            console.log(results);
+            res.status(200).json({ message: 'Package Updated' });
+          } else {
+            console.log(err);
+            res.send(err);
+          }
+        }
+      );
+    } catch(err) {
+      console.log(err);
+      console.log(req.files)
+
+      const filename = req.files[0].filename;
+      const filePath = `./tmp/${filename}`;
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error('Error deleting file:', err);
+          res.status(500).json({ message: 'Error deleting file.' });
+        }
+        res.status(200).json({ message: 'File deleted successfully.' });
+      });
+    }
+  }
+});
+
+app.delete('/catalogues', upload.any(), (req,res) => {
+  if (req.query.mode == 'delete') {
+    try {
+      connection.query(
+        'DELETE FROM catalogues WHERE package_id = ?',
+        [req.query.id_package],
+        function (err, results) {
+          if(!err) {
+            if (results.length == 0 || undefined) {
+              res.status(404).json({message: "Package not found!"})
+            } else {
+              res.status(200).json(results)
+            }
+          } else {
+            console.log(err);
+            res.send(err)
+          }
+        }
+      );
+    } catch(err) {
+      console.log(err);
+    }
+  }
+});
+
+// Order Dashboard
+
+app.get('/allCatalogues', upload.any(), (req,res) => {
+  try {
+    connection.query(
+      'SELECT * FROM `catalogues`',
+      function (err, results) {
+        if(!err) {
+          if (results.length == 0 || undefined) {
+            res.status(404).json({message: "No Packages Existed"})
+          } else {
+            res.status(200).json(results)
+          }
+        } else {
+          console.log(err);
+          res.send(err)
+        }
+      }
+    );
+  } catch(err) {
+    console.log(err);
+  }
+})
+
+app.post('/orders', upload.any(), (req,res) => {
+  try {
+    connection.query(
+      'INSERT INTO `order` (package_id, name, email, wedding_date) VALUES (?,?,?,?)',
+      [req.body.package, req.body.name, req.body.email, req.body.weddingDate],
+      function (err, results) {
+        if(!err) {
+          console.log(results);
+          res.status(200).json({ message: 'Order Created!' });
+        } else {
+          console.log(err);
+          res.send(err);
+        }
+      }
+    );
+  } catch(err) {
+    console.log(err);
+  }
+});
+
+// index
 
 app.get('/', (req, res) => {
   res.send('This is the back end handler of LSP JWP Web')

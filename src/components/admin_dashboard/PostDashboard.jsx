@@ -14,13 +14,13 @@ export default function PostDashboard() {
     const content_post_input = useRef(null);
     const media_post_read = useRef(null);
 
-    useEffect(() => {
-        console.log(mode);
-        console.log(id_post);
-        console.log(title_post);
-        console.log(media_post);
-        console.log(content_post);
-    })
+    // useEffect(() => {
+    //     console.log(mode);
+    //     console.log(id_post);
+    //     console.log(title_post);
+    //     console.log(media_post);
+    //     console.log(content_post);
+    // }, [mode,id_post,title_post,media_post,content_post]);
 
     async function handleForm(e) {
         e.preventDefault()
@@ -126,6 +126,7 @@ export default function PostDashboard() {
             let title_post = data.title;
             let media_post = data.image;
             let content_post = data.description;
+            
             title_post_input.current.value = title_post
             content_post_input.current.value = content_post
 
