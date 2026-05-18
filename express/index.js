@@ -23,6 +23,7 @@ const port = 3000
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use('/uploads', express.static('./tmp'))
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -89,6 +90,28 @@ app.get('/post', upload.any(), (req,res) => {
     } catch(err) {
       console.log(err);
     }
+  }
+})
+
+app.get('/allPost', upload.any(), (req,res) => {
+  try {
+    connection.query(
+      'SELECT * FROM `post`',
+      function (err, results) {
+        if(!err) {
+          if (results.length == 0 || undefined) {
+            res.status(404).json({message: "No Post Existed"})
+          } else {
+            res.status(200).json(results)
+          }
+        } else {
+          console.log(err);
+          res.send(err)
+        }
+      }
+    );
+  } catch(err) {
+    console.log(err);
   }
 })
 
