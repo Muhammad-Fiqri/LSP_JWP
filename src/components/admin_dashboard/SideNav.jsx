@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 let button_list = [
     {
@@ -32,18 +33,36 @@ let button_list = [
 export default function SideNav() {
     let navigate = useNavigate();
 
+
+    const authenticate = async () => {
+        try {
+            const res = await axios.get("http://localhost:3000/auth", 
+                {
+                    headers: {
+                        'JWT': sessionStorage.getItem("JWT")
+                    }
+                }
+            );
+
+            console.log(res);
+
+            if(res.status != 200) {
+                alert("You are not logged in!");
+                navigate("/login");
+            } else {
+                alert("Welcome Admin");
+            }
+        } catch(err) {
+            alert("You are not logged in!");
+            navigate("/login");
+        }
+    }
+
     const hasRun = useRef(false);
     useEffect(() => {
         if (hasRun.current) return;
         hasRun.current = true;
-        
-        let cookie = document.cookie
-        if (cookie.includes('username=fiqri')) {
-            alert("Welcome Admin")
-        } else {
-            alert("You are not logged in!")
-            navigate("/login")
-        }
+        authenticate();
     },[]);
 
     return(
@@ -51,7 +70,7 @@ export default function SideNav() {
             <div id="side-nav" className="h-[100vh] w-[100%] bg-[#9A9A9A]">
                 {
                     button_list.map((item) => {
-                        return(<button onClick={() => {navigate(item.link)}} className="w-[10vw] h-[50px] hover:bg-[#D9D9D9] text-left pl-[15px]">{item.name}</button>);
+                        return(<button key={item.name} onClick={() => {navigate(item.link)}} className="w-[10vw] h-[50px] hover:bg-[#D9D9D9] text-left pl-[15px]">{item.name}</button>);
                     })
                 }
             </div>

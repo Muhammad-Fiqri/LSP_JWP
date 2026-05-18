@@ -15,16 +15,15 @@ export default function CatalogDashboard() {
     const price_package_input = useRef(null);
     const media_post_read = useRef(null);
 
-    useEffect(() => {
-        console.log(mode);
-        console.log(id_package);
-        console.log(name_package);
-        console.log(media_post);
-        console.log(description_package);
-        console.log(price_package);
-
-        console.log(description_package_input)
-    }, [mode, id_package, name_package, media_post, description_package, price_package]);
+    // useEffect(() => {
+    //     console.log(mode);
+    //     console.log(id_package);
+    //     console.log(name_package);
+    //     console.log(media_post);
+    //     console.log(description_package);
+    //     console.log(price_package);
+    //     console.log(description_package_input);
+    // }, [mode, id_package, name_package, media_post, description_package, price_package]);
 
     async function handleForm(e) {
         e.preventDefault()

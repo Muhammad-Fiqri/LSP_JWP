@@ -25,11 +25,9 @@ export default function LoginForm() {
                 },
             });
 
-            console.log(res);
-
-            if(res.data) {
-                //set cookie
-                document.cookie = "username=fiqri";
+            if(res.status == 200) {
+                sessionStorage.setItem('JWT', res.data.JWT)
+                alert(res.data.message)
                 navigate("/admin/catalog")
             } else {
                 alert("your email and password is wrong, try again!")
