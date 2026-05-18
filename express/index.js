@@ -348,12 +348,54 @@ app.get('/allCatalogues', upload.any(), (req,res) => {
 app.post('/orders', upload.any(), (req,res) => {
   try {
     connection.query(
-      'INSERT INTO `order` (package_id, name, email, wedding_date) VALUES (?,?,?,?)',
-      [req.body.package, req.body.name, req.body.email, req.body.weddingDate],
+      'INSERT INTO `order` (package_id, name, email, message, wedding_date) VALUES (?,?,?,?,?)',
+      [req.body.package, req.body.name, req.body.email, req.body.message, req.body.weddingDate],
       function (err, results) {
         if(!err) {
           console.log(results);
           res.status(200).json({ message: 'Order Created!' });
+        } else {
+          console.log(err);
+          res.send(err);
+        }
+      }
+    );
+  } catch(err) {
+    console.log(err);
+  }
+});
+
+app.get('/orders', upload.any(), (req,res) => {
+  try {
+    connection.query(
+      'SELECT * FROM `order`',
+      function (err, results) {
+        if(!err) {
+          if (results.length == 0 || undefined) {
+            res.status(404).json({message: "No Orders Existed"})
+          } else {
+            res.status(200).json(results)
+          }
+        } else {
+          console.log(err);
+          res.send(err)
+        }
+      }
+    );
+  } catch(err) {
+    console.log(err);
+  }
+})
+
+app.put('/order-status', upload.any(), (req,res) => {
+  try {
+    connection.query(
+      'UPDATE `order` SET status = "approved" WHERE order_id = ?',
+      [req.body.order_id],
+      function (err, results) {
+        if(!err) {
+          console.log(results);
+          res.status(200).json({ message: 'Order Status Updated' });
         } else {
           console.log(err);
           res.send(err);
