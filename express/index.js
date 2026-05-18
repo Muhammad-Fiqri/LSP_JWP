@@ -4,6 +4,9 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -21,9 +24,14 @@ const fs = require('fs');
 const app = express()
 const port = 3000
 
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+   exposedHeaders: ['set-cookie']
+}))
 app.use(bodyParser.json())
 app.use('/uploads', express.static('./tmp'))
+app.use(cookieParser());
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -36,18 +44,28 @@ const connection = mysql.createConnection({
 app.post('/login', (req, res) => {
   try {
     connection.query(
-      'SELECT * FROM `users` WHERE `email` = ? AND `password` = ?',
-      [req.body.email, req.body.password],
-      function (err, results) {
-        if(!err) {
-          if (results.length == 0 || undefined) {
-            res.send(false)
+      'SELECT * FROM `users` WHERE `email` = ?',
+      [req.body.email],
+      async function (err, results) {
+
+        if (results.length != 0) {
+          const is_password_match = await bcrypt.compare(req.body.password, results[0].password)
+          
+          if(!err) {
+            if(is_password_match) {
+              console.log("Password match");
+
+              const token = jwt.sign({ user_id: results[0].user_id }, '67', {expiresIn: '1h'})
+
+              res.json({message: 'Login successful', JWT: token});
+            } else {
+              console.log("Password not match");
+              res.status(500).json({ error: 'Password not match'});
+            }
           } else {
-            res.send(true)
+            console.log(err);
+            res.send(err)
           }
-        } else {
-          console.log(err);
-          res.send(err)
         }
       }
     );
@@ -57,6 +75,45 @@ app.post('/login', (req, res) => {
   }
 }
 )
+
+app.post('/register', async (req,res) => {
+  try {
+
+    const hashed_password = await bcrypt.hash(req.body.password,10);
+
+    connection.query(
+      'INSERT INTO `users` (username, email, password)',
+      [req.body.username,req.body.email,hashed_password],
+      function(err,results) {
+        if (!err) {
+          console.log(results);
+          res.status(200).json({message: 'Admin account have been created!'})
+        } else {
+          console.log(err);
+          res.send(err);
+        }
+      }
+    )
+
+  } catch(err) {
+    console.log(err);
+  }
+})
+
+app.get('/auth', (req,res) => {
+  try {
+    const token = req.headers.jwt;
+
+    if (!token) return res.status(401).json({ message: "You arent logged in"});
+
+    jwt.verify(token, '67', (err, user) => {
+      if (err) return res.status(403).json({ message: "Your JWT is stale, login again please!"});
+      res.json({ authenticated: true, user: req.user})
+    })
+  } catch(err) {
+    console.log(err);
+  }
+})
 
 // Download Image
 
