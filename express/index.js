@@ -321,6 +321,50 @@ app.delete('/catalogues', upload.any(), (req,res) => {
   }
 });
 
+// Order Dashboard
+
+app.get('/allCatalogues', upload.any(), (req,res) => {
+  try {
+    connection.query(
+      'SELECT * FROM `catalogues`',
+      function (err, results) {
+        if(!err) {
+          if (results.length == 0 || undefined) {
+            res.status(404).json({message: "No Packages Existed"})
+          } else {
+            res.status(200).json(results)
+          }
+        } else {
+          console.log(err);
+          res.send(err)
+        }
+      }
+    );
+  } catch(err) {
+    console.log(err);
+  }
+})
+
+app.post('/orders', upload.any(), (req,res) => {
+  try {
+    connection.query(
+      'INSERT INTO `order` (package_id, name, email, wedding_date) VALUES (?,?,?,?)',
+      [req.body.package, req.body.name, req.body.email, req.body.weddingDate],
+      function (err, results) {
+        if(!err) {
+          console.log(results);
+          res.status(200).json({ message: 'Order Created!' });
+        } else {
+          console.log(err);
+          res.send(err);
+        }
+      }
+    );
+  } catch(err) {
+    console.log(err);
+  }
+});
+
 // index
 
 app.get('/', (req, res) => {

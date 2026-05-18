@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 
 export default function Order() {
 
@@ -10,18 +11,60 @@ export default function Order() {
         weddingDate: ''
     });
 
-    const packageOptions = ["Paket 1", "Paket 2", "Paket 3"];
+    const [packageOptions, setPackageOptions] = useState(["Tak Ada Paket Ditemukan"])
 
+    const getAllPackage = async () => {
+        try {
+            const res = await axios.get('http://localhost:3000/allCatalogues');
+            if(res.status == 200) {
+                alert("All Package Retrieved!")
+                const package_data = res.data
+                const package_id_only_array = package_data.map(item => item.package_id)
+                setPackageOptions(package_id_only_array);
+                setFormData(prev => ({ ...prev, ["package"]: package_id_only_array[0]}))
+            }
+        } catch(err) {
+            alert(err)
+        }
+    }
+    
+    const is_rendered = useRef(false);
+    useEffect(() => {
+        if (is_rendered.current) return
+        getAllPackage();
+        is_rendered.current = true
+    },[packageOptions])
+
+    useEffect(() => {
+        console.log(formData);
+    },[formData])
+    
     const handleChange = (e) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log('Order Submitted:', formData);
-        alert('Form submitted successfully! (Replace with custom modal in production)');
+        const fData = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+            fData.append(key, value);
+        });
+
+        try {
+            const res = await axios.post('http://localhost:3000/orders', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if(res.status == 200) {
+                alert(res.data.message)
+            }
+        } catch(err) {
+            alert(err)
+        }
     };
 
     return (
@@ -64,7 +107,7 @@ export default function Order() {
 
                     <div>
                         <label htmlFor="package" className="block text-sm">
-                            Paket yang dipilih:
+                            ID Paket yang dipilih:
                         </label>
                         <select
                             id="package"
