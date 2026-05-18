@@ -1,18 +1,38 @@
-# React + Vite
+# Web Prewedding Junior Web Programming LSP Semester 6 dan 8
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+I made this website for LSP JWP course in Gunadarma University, I made this so I can graduate and gain my bachelor degree in computer science
 
-Currently, two official plugins are available:
+Made with:
+- React
+- Express
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# How to Run
 
-## React Compiler
+On the project directory run:
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+```
+yarn
+```
+to install packages for react needed in this project
 
-Note: This will impact Vite dev & build performances.
 
-## Expanding the ESLint configuration
+```
+yarn run dev
+```
+to run the front end app
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Move to express folder using:
+```
+cd express
+```
+
+On the express folder run:
+```
+yarn
+```
+to install modules that express use in this project
+
+```
+yarn run dev
+```
+to run the backend
