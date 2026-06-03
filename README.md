@@ -1,4 +1,4 @@
-# Web Prewedding Junior Web Programming LSP Semester 6 dan 8
+# Web Prewedding Junior Web Programming LSP Semester 6
 
 I made this website for LSP JWP course in Gunadarma University, I made this so I can graduate and gain my bachelor degree in computer science
 
